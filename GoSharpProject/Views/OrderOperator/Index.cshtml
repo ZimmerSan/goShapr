@@ -1,0 +1,54 @@
+﻿@model IEnumerable<GoSharpProject.Models.entities.Order>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DueDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderStartus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DetailDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Total)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.OrderDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DueDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.orderStartus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DetailDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Total)
+        </td>
+        <td>
+            <input type="submit" value="Make Project" onclick="location.href='@Url.Action("Confrim", "OrderOperator", new { id = item.Id })'" class="btn btn-default" />
+            <input type="submit"  value="Reject" onclick="location.href='@Url.Action("Reject", "OrderOperator", new { id = item.Id })'"  class="btn btn-default" />
+        </td>
+    </tr>
+}
+
+</table>

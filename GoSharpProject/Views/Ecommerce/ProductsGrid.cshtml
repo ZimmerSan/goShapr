@@ -1,0 +1,76 @@
+﻿@model PagedList.IPagedList<GoSharpProject.Models.entities.SiteTemplate>
+@using GoSharpProject.Models.constants
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Site Templates";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>@ViewBag.Title</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="@Url.Action("Dashboard", "Home")">Home</a>
+            </li>
+            <li>
+                <a href="@Url.Action("ProductsGrid", "Ecommerce")">E-commerce</a>
+            </li>
+            <li class="active">
+                <strong>@ViewBag.Title</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    @if (Request.IsAuthenticated && (User.IsInRole(RolesConst.ADMIN) || User.IsInRole(RolesConst.MANAGER)))
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <a class="btn btn-info" href="@Url.Action("Create")">Create New</a>
+            </div>
+        </div>
+        <br/>
+    }
+    <div class="row">
+        @foreach (var itemTuple in Model.Select((value, index) => new {Value = value, Index = index}))
+        {
+            var item = itemTuple.Value;
+            <div class="col-md-3">
+                <div class="ibox">
+                    <div class="ibox-content product-box">
+                        <div style="position: relative; overflow: hidden">
+                            @if (item.InternalImage != null)
+                            {
+                                <img style="width: 100%" src="@Url.Action("RenderImage", new {id = item.Id})"/>
+                            }
+                            else
+                            {
+                                <div class="product-imitation">[INFO]</div>
+                            }
+                        </div>
+                        <div class="product-desc">
+                            <span class="product-price">
+                                $@Html.DisplayFor(modelItem => item.Price)
+                            </span>
+                            <small class="text-muted">@Html.DisplayFor(modelItem => item.Category)</small>
+                            <a href="@Url.Action("Details", "Ecommerce", new {id = item.Id})" class="product-name">
+                                @item.Name
+                            </a>
+                            <div class="small m-t-xs">
+                                @Html.DisplayFor(modelItem => item.ShortDescription)
+                            </div>
+                            <div class="m-t text-righ">
+                                <a href="@Url.Action("Details", "Ecommerce", new {id = item.Id})" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            if (itemTuple.Index % 4 == 3)
+            {
+                @:</div><div class="row"> 
+            }
+        }
+    </div>
+</div>

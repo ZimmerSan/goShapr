@@ -1,0 +1,42 @@
+﻿@model GoSharpProject.Models.entities.Order
+
+ @{
+     ViewBag.Title = "Details";
+ }
+ 
+ <h2>Details</h2>
+ 
+ <div>
+     <h4>Order</h4>
+ 	<hr />
+     <dl class="dl-horizontal">
+         <dt>
+             Order Number
+         </dt>
+         <dd>
+            @Html.DisplayFor(model => model.Id)
+         </dd>
+         <dt>
+         @Html.DisplayNameFor(model => model.DueDate)
+         </dt>
+ 
+         <dd>
+                         @Html.DisplayFor(model => model.DueDate)
+         </dd>
+ 
+        <dt>
+            @Html.DisplayNameFor(model => model.OrderStartus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderStartus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DetailDescription)
+        </dt>
+
+         <dd>
+            @Html.DisplayFor(model => model.DetailDescription)
+
+         </dd>
