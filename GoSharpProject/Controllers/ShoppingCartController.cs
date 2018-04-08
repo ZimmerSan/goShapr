@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GoSharpProject.Models.constants;
 using GoSharpProject.Models.entities;
 using GoSharpProject.Models.repository;
 
@@ -12,25 +13,8 @@ namespace GoSharpProject.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        UnitOfWork unityOfWork = new UnitOfWork();
-        //ApplicationDbContext storeDB = new ApplicationDbContext();
-        //
-        // GET: /ShoppingCart/
-        public ActionResult Index()
-        {
-            var cart = ShoppingCart.GetCart(this.HttpContext);
+        UnitOfWork unitOfWork = new UnitOfWork();
 
-            // Set up our ViewModel
-            var viewModel = new ShoppingCartViewModel
-            {
-                CartRecords = cart.GetCartRecords(),
-                TotalPrice = cart.GetTotal()
-            };
-            // Return the view
-            return View(viewModel);
-        }
-        //
-        // GET: /Store/AddToCart/5
         [HttpPost]
         public ActionResult AddToCart(int id)
         {
@@ -40,7 +24,7 @@ namespace GoSharpProject.Controllers
             int count = cart.AddToCart(id);
 
             // Retrieve the item from the database
-            var addedItem = unityOfWork.SiteTemplateRepository.dbSet
+            var addedItem = unitOfWork.SiteTemplateRepository.dbSet
                 .Single(item => item.Id == id);
 
             // Display the confirmation message
@@ -57,24 +41,17 @@ namespace GoSharpProject.Controllers
             // Go back to the main store page for more shopping
             // return RedirectToAction("Index");
         }
-        //
-        // AJAX: /ShoppingCart/RemoveFromCart/5
+
         [HttpPost]
         public ActionResult RemoveFromCart(int id)
         {
-            // Remove the item from the cart
             var cart = ShoppingCart.GetCart(this.HttpContext);
 
-            // Get the name of the item to display confirmation
-
-            // Get the name of the album to display confirmation
-            string itemName = unityOfWork.SiteTemplateRepository.dbSet
+            string itemName = unitOfWork.SiteTemplateRepository.dbSet
                 .Single(item => item.Id == id).Name;
 
-            // Remove from cart
             int itemCount = cart.RemoveFromCart(id);
 
-            // Display the confirmation message
             var results = new ShoppingCartRemoveViewModel
             {
                 Message = "One (1) " + Server.HtmlEncode(itemName) +
@@ -86,8 +63,7 @@ namespace GoSharpProject.Controllers
             };
             return Json(results);
         }
-        //
-        // GET: /ShoppingCart/CartSummary
+
         [ChildActionOnly]
         public ActionResult CartSummary()
         {
@@ -95,6 +71,31 @@ namespace GoSharpProject.Controllers
 
             ViewData["CartCount"] = cart.GetCount();
             return PartialView("CartSummary");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = RolesConst.CUSTOMER)]
+        public ActionResult Checkout()
+        {
+            var order = new Order();
+            TryUpdateModel(order);
+
+            order.OrderDate = DateTime.Now;
+            order.DueDate = DateTime.Now;
+            order.OrderStatus = OrderStatus.Initiating;
+            order.Customer = (Customer)unitOfWork.CustomerRepository.dbSet.Where(s => s.UserName.Equals(User.Identity.Name)).First();
+
+            //Save Order
+            unitOfWork.OrderRepository.Insert(order);
+            unitOfWork.Save();
+
+            //Process the order
+            var cart = OrderCart.GetCart(this);
+            //   order.orderItems = new Collection<SiteTemplate>();
+            cart.CreateOrder(order);
+            unitOfWork.Save();
+
+            return RedirectToAction("Dashboard", "Home");
         }
     }
 }

@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using GoSharpProject.Models.entities;
 using GoSharpProject.Models;
-using GoSharpProject.Models.repository;
 using GoSharpProject.Models.constants;
+using GoSharpProject.Models.entities;
+using GoSharpProject.Models.repository;
 
 namespace GoSharpProject.Controllers
 {
-    public class OrderOperatorController : Controller
+    public class ManagementController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private UnitOfWork unitOfWork = new UnitOfWork();
         private IEnumerable<Order> activeOrders;
 
-        // GET: /OrderOperator/
         public ActionResult Index()
         {
-            activeOrders  = unitOfWork.OrderRepository.Get().Where(s => s.OrderStatus.Equals(OrderStatus.Initiating));
+            activeOrders = unitOfWork.OrderRepository.Get().Where(s => s.OrderStatus.Equals(OrderStatus.Initiating));
             return View(activeOrders);
         }
 
-        public ActionResult Reject(int? id)
+        public ActionResult RejectOrder(int? id)
         {
             Order ord = unitOfWork.OrderRepository.GetByID(id);
             ord.OrderStatus = OrderStatus.Rejected;
@@ -36,7 +32,7 @@ namespace GoSharpProject.Controllers
         }
 
 
-        public ActionResult Confrim(int? id)
+        public ActionResult ConfirmOrder(int orderId)
         {
 
             IEnumerable<ApplicationUser> managers = unitOfWork.UserRepository.Get().Where(s => s.RoleName.Equals(RolesConst.MANAGER));
@@ -44,15 +40,15 @@ namespace GoSharpProject.Controllers
             ViewBag.pm = managers;
             //make enumerable from enum
             //ViewBag.ps = (IEnumerable<ProjectStatus>)Enum.GetValues(typeof(ProjectStatus)); 
-            Project proj = new Project();
-           
+            Project proj = new Project(){Id = orderId};
+
             return View(proj);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Confrim(Project pro)
+        public ActionResult ConfirmOrder(Project pro)
         {
             if (ModelState.IsValid)
             {
@@ -60,17 +56,17 @@ namespace GoSharpProject.Controllers
 
                 ord.OrderStatus = OrderStatus.Processing;
                 unitOfWork.OrderRepository.Update(ord);
-                
-             
+
+
                 pro.Order = ord;
                 pro.Costs = ord.Total;
-                IEnumerable<ApplicationUser> them =  unitOfWork.UserRepository.Get().Where(s => s.RoleName.Equals(RolesConst.MANAGER));
+                IEnumerable<ApplicationUser> them = unitOfWork.UserRepository.Get().Where(s => s.RoleName.Equals(RolesConst.MANAGER));
                 foreach (ApplicationUser manager in them)
                 {
                     if (manager.UserName.Equals(pro.NameProjectManager))
                         pro.ProjectManager = manager;
                 }
-              
+
                 pro.ProjectStatus = ProjectStatus.Initial;
 
                 unitOfWork.ProjectRepository.Insert(pro);

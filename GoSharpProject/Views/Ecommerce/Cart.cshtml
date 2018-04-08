@@ -26,191 +26,60 @@
         <div class="col-md-9">
             <div class="ibox">
                 <div class="ibox-title">
-                    <span class="pull-right">(<strong>@Model.ItemsCount</strong>) items</span>
+                    <span class="pull-right">(<strong id="cart-total-count">@Model.ItemsCount</strong>) items</span>
                     <h5>Items in your cart</h5>
                 </div>
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="table shoping-cart-table">
-                            <tbody>
-                                <tr>
-                                    <td width="90">
-                                        <div class="cart-product-imitation">
-                                        </div>
-                                    </td>
-                                    <td class="desc">
-                                        <h3>
-                                            <a href="#" class="text-navy">
-                                                Text editor
-                                            </a>
-                                        </h3>
-                                        <p class="small">
-                                            There are many variations of passages of Lorem Ipsum available
-                                        </p>
-                                        <dl class="small m-b-none">
-                                            <dt>Description lists</dt>
-                                            <dd>List is perfect for defining terms.</dd>
-                                        </dl>
-                                        <div class="m-t-sm">
-                                            <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift package</a>
-                                            |
-                                            <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        $50,00
-                                        <s class="small text-muted">$63,00</s>
-                                    </td>
-                                    <td width="65">
-                                        <input type="text" class="form-control" placeholder="2">
-                                    </td>
-                                    <td>
-                                        <h4>
-                                            $100,00
-                                        </h4>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                @foreach (var item in Model.CartRecords)
+                {
+                    <div id="row-@item.SiteTemplate.Id" class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                    <tr>
+                                        <td width="90">
+                                            @if (item.SiteTemplate.InternalImage != null)
+                                            {
+                                                <img style="width: 100%" src="@Url.Action("RenderImage", new {id = item.SiteTemplate.Id})" />
+                                            }
+                                            else
+                                            {
+                                                <div class="cart-product-imitation"></div>
+                                            }
+                                        </td>
+                                        <td class="desc">
+                                            <h3>
+                                                <a href="@Url.Action("Details", new {id = item.SiteTemplate.Id})" class="text-navy">
+                                                    @item.SiteTemplate.Name
+                                                </a>
+                                            </h3>
+                                            <p class="small">
+                                                @item.SiteTemplate.ShortDescription
+                                            </p>
+                                            <dl class="small m-b-none">
+                                                <dt>@Html.DisplayNameFor(model => item.SiteTemplate.Category)</dt>
+                                                <dd>@Html.DisplayFor(model => item.SiteTemplate.Category)</dd>
+                                            </dl>
+                                            <div class="m-t-sm">
+                                                <a href="#" class="text-muted" id="btn-remove-cart-item" data-id="@item.SiteTemplate.Id"><i class="fa fa-trash"></i> Remove item</a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            $@item.SiteTemplate.Price
+                                        </td>
+                                        <td width="65">
+                                            <span id="item-count-@item.SiteTemplate.Id">@item.Count</span>
+                                        </td>
+                                        <td>
+                                            <h4>
+                                                $<span id="item-total-price-@item.SiteTemplate.Id">@(item.SiteTemplate.Price * item.Count)</span>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="table shoping-cart-table">
-                            <tbody>
-                                <tr>
-                                    <td width="90">
-                                        <div class="cart-product-imitation">
-                                        </div>
-                                    </td>
-                                    <td class="desc">
-                                        <h3>
-                                            <a href="#" class="text-navy">
-                                                CRM software
-                                            </a>
-                                        </h3>
-                                        <p class="small">
-                                            Distracted by the readable
-                                            content of a page when looking at its layout. The point of using Lorem Ipsum is
-                                        </p>
-                                        <dl class="small m-b-none">
-                                            <dt>Description lists</dt>
-                                            <dd>A description list is perfect for defining terms.</dd>
-                                        </dl>
-                                        <div class="m-t-sm">
-                                            <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift package</a>
-                                            |
-                                            <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        $110,00
-                                    </td>
-                                    <td width="65">
-                                        <input type="text" class="form-control" placeholder="1">
-                                    </td>
-                                    <td>
-                                        <h4>
-                                            $110,00
-                                        </h4>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="table shoping-cart-table">
-                            <tbody>
-                                <tr>
-                                    <td width="90">
-                                        <div class="cart-product-imitation">
-                                        </div>
-                                    </td>
-                                    <td class="desc">
-                                        <h3>
-                                            <a href="#" class="text-navy">
-                                                PM software
-                                            </a>
-                                        </h3>
-                                        <p class="small">
-                                            Readable content of a page when looking at its layout. The point of using Lorem Ipsum is
-                                        </p>
-                                        <dl class="small m-b-none">
-                                            <dt>Description lists</dt>
-                                            <dd>A description list is perfect for defining terms.</dd>
-                                        </dl>
-                                        <div class="m-t-sm">
-                                            <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift package</a>
-                                            |
-                                            <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        $130,00
-                                    </td>
-                                    <td width="65">
-                                        <input type="text" class="form-control" placeholder="1">
-                                    </td>
-                                    <td>
-                                        <h4>
-                                            $130,00
-                                        </h4>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="table-responsive">
-                        <table class="table shoping-cart-table">
-                            <tbody>
-                                <tr>
-                                    <td width="90">
-                                        <div class="cart-product-imitation">
-                                        </div>
-                                    </td>
-                                    <td class="desc">
-                                        <h3>
-                                            <a href="#" class="text-navy">
-                                                Photo editor
-                                            </a>
-                                        </h3>
-                                        <p class="small">
-                                            Page when looking at its layout. The point of using Lorem Ipsum is
-                                        </p>
-                                        <dl class="small m-b-none">
-                                            <dt>Description lists</dt>
-                                            <dd>A description list is perfect for defining terms.</dd>
-                                        </dl>
-                                        <div class="m-t-sm">
-                                            <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift package</a>
-                                            |
-                                            <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        $700,00
-                                    </td>
-                                    <td width="65">
-                                        <input type="text" class="form-control" placeholder="1">
-                                    </td>
-                                    <td>
-                                        <h4>
-                                            $70,00
-                                        </h4>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button>
-                    <button class="btn btn-white"><i class="fa fa-arrow-left"></i> Continue shopping</button>
-                </div>
+                }
             </div>
         </div>
         <div class="col-md-3">
@@ -223,7 +92,7 @@
                         Total
                     </span>
                     <h2 class="font-bold">
-                        $@Model.TotalPrice
+                        $<span id="cart-total-price">@Model.TotalPrice</span>
                     </h2>
                     <hr />
                     <span class="text-muted small">
@@ -231,8 +100,11 @@
                     </span>
                     <div class="m-t-sm">
                         <div class="btn-group">
-                            <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-shopping-cart"></i> Checkout</a>
-                            <a href="#" class="btn btn-white btn-sm"> Cancel</a>
+                            @using (Html.BeginForm("Checkout", "ShoppingCart", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="submit" value="Checkout" class="btn btn-primary btn-sm" />
+                            }
                         </div>
                     </div>
                 </div>
@@ -250,35 +122,34 @@
 
                 </div>
             </div>
-            <div class="ibox">
-                <div class="ibox-content">
-                    <p class="font-bold">
-                        Other products you may be interested
-                    </p>
-                    <hr />
-                    <div>
-                        <a href="#" class="product-name"> Product 1</a>
-                        <div class="small m-t-xs">
-                            Many desktop publishing packages and web page editors now.
-                        </div>
-                        <div class="m-t text-righ">
-                            <a href="#" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                        </div>
-                    </div>
-                    <hr />
-                    <div>
-                        <a href="#" class="product-name"> Product 2</a>
-                        <div class="small m-t-xs">
-                            Many desktop publishing packages and web page editors now.
-                        </div>
-                        <div class="m-t text-righ">
-                            <a href="#" class="btn btn-xs btn-outline btn-primary">Info <i class="fa fa-long-arrow-right"></i> </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-
-
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btn-remove-cart-item").click(() => {
+                // Get the id from the link
+                var id = $("#btn-remove-cart-item").attr("data-id");
+                if (id) {
+                    $.ajax({
+                        type: "POST",
+                        data: { id: id },
+                        url: "/ShoppingCart/RemoveFromCart",
+                        success: (data) => {
+                            if (data.ItemCount === 0) {
+                                $('#row-' + data.DeleteId).fadeOut('slow');
+                            } else {
+                                $('#item-count-' + data.DeleteId).text(data.ItemCount);
+                            }
+                            $('#cart-total-price').text(data.CartTotal);
+                            $('#cart-count-label').text(data.CartCount);
+                            $('#cart-total-count').text(data.CartCount);
+                        },
+                    });
+                }
+            });
+        });
+    </script>
+}

@@ -63,6 +63,9 @@ namespace GoSharpProject.Controllers
                 var user = await UserManager.FindAsync(model.Email, model.Password);
                 if (user != null)
                 {
+                    Session["user_name"] = user.Name;
+                    Session["user_role"] = user.RoleName;
+
                     await SignInAsync(user, model.RememberMe);
                     MigrateShoppingCart(user.UserName);
                     return RedirectToLocal(returnUrl);

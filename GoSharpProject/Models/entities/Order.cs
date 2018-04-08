@@ -18,7 +18,7 @@ namespace GoSharpProject.Models.entities
         [ScaffoldColumn(false)]
         public DateTime OrderDate { get; set; }
         public DateTime DueDate { get; set; }
-        public OrderStatus OrderStartus { get; set; }
+        public OrderStatus OrderStatus { get; set; }
         public virtual ICollection<SiteTemplate> OrderItems { get; set; }
         public string DetailDescription { get; set; }
         [ScaffoldColumn(false)]
